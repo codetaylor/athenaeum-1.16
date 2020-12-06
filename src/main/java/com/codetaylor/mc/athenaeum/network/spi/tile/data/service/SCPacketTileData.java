@@ -69,6 +69,7 @@ public class SCPacketTileData
           try {
             tracker.updateClient(message.buffer);
             TileDataServiceClientMonitor.onClientPacketReceived(tracker, message.blockPos, message.buffer.writerIndex());
+            contextSupplier.get().setPacketHandled(true);
 
           } catch (Exception e) {
             TileDataServiceLogger.LOGGER.error("", e);
