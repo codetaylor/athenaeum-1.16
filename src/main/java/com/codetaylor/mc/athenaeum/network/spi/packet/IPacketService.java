@@ -23,6 +23,8 @@ public interface IPacketService {
 
   void sendToNear(PacketDistributor.TargetPoint targetPoint, IMessage message);
 
+  void sendToNear(TileEntity tileEntity, IMessage message);
+
   void sendToTrackingEntity(Entity entity, IMessage message);
 
   void sendToTrackingEntityAndSelf(Entity entity, IMessage message);

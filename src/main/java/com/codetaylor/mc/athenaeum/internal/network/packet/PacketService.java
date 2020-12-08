@@ -17,12 +17,15 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class PacketService
     implements IPacketService {
+
+  public static final int DEFAULT_RANGE = 64;
 
   private final SimpleChannel channel;
 
@@ -131,6 +134,15 @@ public class PacketService
   public void sendToNear(PacketDistributor.TargetPoint targetPoint, IMessage message) {
 
     this.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), message);
+  }
+
+  @Override
+  public void sendToNear(TileEntity tileEntity, IMessage message) {
+
+    World world = tileEntity.getWorld();
+    RegistryKey<World> dimensionKey = Objects.requireNonNull(world).getDimensionKey();
+    BlockPos pos = tileEntity.getPos();
+    this.sendToNear(new PacketDistributor.TargetPoint(pos.getX(), pos.getY(), pos.getZ(), DEFAULT_RANGE, dimensionKey), message);
   }
 
   @Override
