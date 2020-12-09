@@ -4,22 +4,20 @@ import com.codetaylor.mc.athenaeum.gui.element.GuiElementBase;
 import com.codetaylor.mc.athenaeum.gui.element.IGuiElementClickable;
 import com.codetaylor.mc.athenaeum.gui.element.IGuiElementTooltipExtendedProvider;
 import com.codetaylor.mc.athenaeum.gui.element.IGuiElementTooltipProvider;
-import com.codetaylor.mc.athenaeum.util.KeyHelper;
 import com.codetaylor.mc.athenaeum.util.TooltipHelper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -146,10 +144,7 @@ public abstract class GuiContainerBase<T extends ContainerBase>
 
         if (element instanceof IGuiElementTooltipExtendedProvider) {
 
-          InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT);
-
-          if (KeyHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)
-              || KeyHelper.isKeyDown(GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+          if (Screen.hasShiftDown()) {
             ((IGuiElementTooltipExtendedProvider) element).tooltipTextExtendedGet(this.tooltipTextList);
 
           } else {
