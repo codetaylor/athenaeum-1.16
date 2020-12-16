@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -52,6 +53,44 @@ public class GuiHelper {
     fontRenderer.drawString(matrixStack, displayText, x - 1, y - 0, textShadowColor);
 
     fontRenderer.drawString(matrixStack, displayText, x, y, Color.BLACK.getRGB());
+  }
+
+  public static void drawStringOutlined(
+      MatrixStack matrixStack,
+      ITextComponent textComponent,
+      int x,
+      int y,
+      FontRenderer fontRenderer,
+      int textShadowColor,
+      boolean dropShadow
+  ) {
+
+    if (dropShadow) {
+      fontRenderer.func_243246_a(matrixStack, textComponent, x + 0, y + 1, textShadowColor);
+      fontRenderer.func_243246_a(matrixStack, textComponent, x + 1, y + 1, textShadowColor);
+      fontRenderer.func_243246_a(matrixStack, textComponent, x + 1, y - 1, textShadowColor);
+      fontRenderer.func_243246_a(matrixStack, textComponent, x + 1, y + 0, textShadowColor);
+
+      fontRenderer.func_243246_a(matrixStack, textComponent, x - 0, y - 1, textShadowColor);
+      fontRenderer.func_243246_a(matrixStack, textComponent, x - 1, y - 1, textShadowColor);
+      fontRenderer.func_243246_a(matrixStack, textComponent, x - 1, y + 1, textShadowColor);
+      fontRenderer.func_243246_a(matrixStack, textComponent, x - 1, y - 0, textShadowColor);
+
+      fontRenderer.func_243246_a(matrixStack, textComponent, x, y, Color.BLACK.getRGB());
+
+    } else {
+      fontRenderer.func_243248_b(matrixStack, textComponent, x + 0, y + 1, textShadowColor);
+      fontRenderer.func_243248_b(matrixStack, textComponent, x + 1, y + 1, textShadowColor);
+      fontRenderer.func_243248_b(matrixStack, textComponent, x + 1, y - 1, textShadowColor);
+      fontRenderer.func_243248_b(matrixStack, textComponent, x + 1, y + 0, textShadowColor);
+
+      fontRenderer.func_243248_b(matrixStack, textComponent, x - 0, y - 1, textShadowColor);
+      fontRenderer.func_243248_b(matrixStack, textComponent, x - 1, y - 1, textShadowColor);
+      fontRenderer.func_243248_b(matrixStack, textComponent, x - 1, y + 1, textShadowColor);
+      fontRenderer.func_243248_b(matrixStack, textComponent, x - 1, y - 0, textShadowColor);
+
+      fontRenderer.func_243248_b(matrixStack, textComponent, x, y, Color.BLACK.getRGB());
+    }
   }
 
   public static void drawTexturedRect(
