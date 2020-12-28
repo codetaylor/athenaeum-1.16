@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.Style;
 import org.lwjgl.opengl.GL11;
 
@@ -22,7 +21,7 @@ public final class GuiHelper {
   public static final ResourceLocation GALACTIC_ALT_FONT = new ResourceLocation("minecraft", "alt");
   public static final Style GALACTIC_STYLE = Style.EMPTY.setFontId(GALACTIC_ALT_FONT);
 
-  public static ITextProperties asGalactic(IFormattableTextComponent textComponent) {
+  public static IFormattableTextComponent asGalactic(IFormattableTextComponent textComponent) {
 
     return textComponent.mergeStyle(GALACTIC_STYLE);
   }
