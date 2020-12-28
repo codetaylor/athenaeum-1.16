@@ -8,14 +8,24 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.Style;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class GuiHelper {
+public final class GuiHelper {
+
+  public static final ResourceLocation GALACTIC_ALT_FONT = new ResourceLocation("minecraft", "alt");
+  public static final Style GALACTIC_STYLE = Style.EMPTY.setFontId(GALACTIC_ALT_FONT);
+
+  public static ITextProperties asGalactic(IFormattableTextComponent textComponent) {
+
+    return textComponent.mergeStyle(GALACTIC_STYLE);
+  }
 
   public static void drawModalRectWithCustomSizedTexture(int x, int y, int z, float u, float v, int width, int height, float textureWidth, float textureHeight) {
 
@@ -33,26 +43,14 @@ public class GuiHelper {
 
   public static void drawStringOutlined(
       MatrixStack matrixStack,
-      String translateKey,
+      ITextComponent textComponent,
       int x,
       int y,
       FontRenderer fontRenderer,
       int textShadowColor
   ) {
 
-    String displayText = I18n.format(translateKey);
-
-    fontRenderer.drawString(matrixStack, displayText, x + 0, y + 1, textShadowColor);
-    fontRenderer.drawString(matrixStack, displayText, x + 1, y + 1, textShadowColor);
-    fontRenderer.drawString(matrixStack, displayText, x + 1, y - 1, textShadowColor);
-    fontRenderer.drawString(matrixStack, displayText, x + 1, y + 0, textShadowColor);
-
-    fontRenderer.drawString(matrixStack, displayText, x - 0, y - 1, textShadowColor);
-    fontRenderer.drawString(matrixStack, displayText, x - 1, y - 1, textShadowColor);
-    fontRenderer.drawString(matrixStack, displayText, x - 1, y + 1, textShadowColor);
-    fontRenderer.drawString(matrixStack, displayText, x - 1, y - 0, textShadowColor);
-
-    fontRenderer.drawString(matrixStack, displayText, x, y, Color.BLACK.getRGB());
+    GuiHelper.drawStringOutlined(matrixStack, textComponent, x, y, fontRenderer, textShadowColor, false);
   }
 
   public static void drawStringOutlined(
