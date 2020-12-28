@@ -27,10 +27,10 @@ import java.util.List;
 public abstract class GuiContainerBase<T extends ContainerBase>
     extends ContainerScreen<T> {
 
-  private final List<GuiElementBase> guiElementList;
-  private final List<IGuiElementClickable> guiElementClickableList;
-  private final List<IGuiElementTooltipProvider> tooltipProviderList;
-  private final List<ITextComponent> tooltipTextList;
+  protected final List<GuiElementBase> guiElementList;
+  protected final List<IGuiElementClickable> guiElementClickableList;
+  protected final List<IGuiElementTooltipProvider> tooltipProviderList;
+  protected final List<ITextComponent> tooltipTextList;
 
   protected int scaledWidth;
   protected int scaledHeight;
