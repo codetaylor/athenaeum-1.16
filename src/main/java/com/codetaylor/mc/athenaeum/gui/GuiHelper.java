@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -26,17 +27,18 @@ public final class GuiHelper {
     return textComponent.mergeStyle(GALACTIC_STYLE);
   }
 
-  public static void drawModalRectWithCustomSizedTexture(int x, int y, int z, float u, float v, int width, int height, float textureWidth, float textureHeight) {
+  public static void drawModalRectWithCustomSizedTexture(MatrixStack matrixStack, int x, int y, int z, float u, float v, int width, int height, float textureWidth, float textureHeight) {
 
     float f = 1.0F / textureWidth;
     float f1 = 1.0F / textureHeight;
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     Tessellator tessellator = Tessellator.getInstance();
     BufferBuilder bufferbuilder = tessellator.getBuffer();
     bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-    bufferbuilder.pos(x, y + height, z).tex(u * f, (v + (float) height) * f1).endVertex();
-    bufferbuilder.pos(x + width, y + height, z).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
-    bufferbuilder.pos(x + width, y, z).tex((u + (float) width) * f, v * f1).endVertex();
-    bufferbuilder.pos(x, y, z).tex(u * f, v * f1).endVertex();
+    bufferbuilder.pos(matrix, x, y + height, z).tex(u * f, (v + (float) height) * f1).endVertex();
+    bufferbuilder.pos(matrix, x + width, y + height, z).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
+    bufferbuilder.pos(matrix, x + width, y, z).tex((u + (float) width) * f, v * f1).endVertex();
+    bufferbuilder.pos(matrix, x, y, z).tex(u * f, v * f1).endVertex();
     tessellator.draw();
   }
 
@@ -93,6 +95,7 @@ public final class GuiHelper {
   public static void drawTexturedRect(
       Minecraft minecraft,
       ResourceLocation texture,
+      MatrixStack matrixStack,
       int x,
       int y,
       int width,
@@ -107,23 +110,24 @@ public final class GuiHelper {
     TextureManager renderEngine = minecraft.getTextureManager();
     renderEngine.bindTexture(texture);
 
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     Tessellator tessellator = Tessellator.getInstance();
     BufferBuilder bufferbuilder = tessellator.getBuffer();
     bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
     bufferbuilder
-        .pos(x, (y + height), zLevel)
+        .pos(matrix, x, (y + height), zLevel)
         .tex(u0, v1)
         .endVertex();
     bufferbuilder
-        .pos((x + width), (y + height), zLevel)
+        .pos(matrix, (x + width), (y + height), zLevel)
         .tex(u1, v1)
         .endVertex();
     bufferbuilder
-        .pos((x + width), y, zLevel)
+        .pos(matrix, (x + width), y, zLevel)
         .tex(u1, v0)
         .endVertex();
     bufferbuilder
-        .pos(x, y, zLevel)
+        .pos(matrix, x, y, zLevel)
         .tex(u0, v0)
         .endVertex();
     tessellator.draw();
@@ -131,6 +135,7 @@ public final class GuiHelper {
 
   public static void drawColoredRect(
       BufferBuilder renderer,
+      MatrixStack matrixStack,
       int x,
       int y,
       int width,
@@ -141,15 +146,17 @@ public final class GuiHelper {
       int alpha
   ) {
 
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-    renderer.pos(x + 0, y + 0, 0.0D).color(red, green, blue, alpha).endVertex();
-    renderer.pos(x + 0, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-    renderer.pos(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-    renderer.pos(x + width, y + 0, 0.0D).color(red, green, blue, alpha).endVertex();
+    renderer.pos(matrix, x + 0, y + 0, 0).color(red, green, blue, alpha).endVertex();
+    renderer.pos(matrix, x + 0, y + height, 0).color(red, green, blue, alpha).endVertex();
+    renderer.pos(matrix, x + width, y + height, 0).color(red, green, blue, alpha).endVertex();
+    renderer.pos(matrix, x + width, y + 0, 0).color(red, green, blue, alpha).endVertex();
     Tessellator.getInstance().draw();
   }
 
   public static void drawVerticalScaledTexturedModalRectFromIconAnchorBottomLeft(
+      MatrixStack matrixStack,
       int x,
       int y,
       float z,
@@ -172,25 +179,26 @@ public final class GuiHelper {
     float minV = icon.getMinV();
     float maxV = icon.getMaxV();
 
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     BufferBuilder buffer = Tessellator.getInstance().getBuffer();
     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
     int sections = height / iconHeight;
 
     for (int i = 0; i < sections; i++) {
-      buffer.pos(x, y + height - (i * iconHeight), z)
+      buffer.pos(matrix, x, y + height - (i * iconHeight), z)
           .tex(minU, maxV)
           .endVertex();
 
-      buffer.pos(x + width, y + height - (i * iconHeight), z)
+      buffer.pos(matrix, x + width, y + height - (i * iconHeight), z)
           .tex(minU + (maxU - minU) * width / (float) iconWidth, maxV)
           .endVertex();
 
-      buffer.pos(x + width, y + height - ((i + 1) * iconHeight), z)
+      buffer.pos(matrix, x + width, y + height - ((i + 1) * iconHeight), z)
           .tex(minU + (maxU - minU) * width / (float) iconWidth, maxV - (maxV - minV))
           .endVertex();
 
-      buffer.pos(x, y + height - ((i + 1) * iconHeight), z)
+      buffer.pos(matrix, x, y + height - ((i + 1) * iconHeight), z)
           .tex(minU, maxV - (maxV - minV))
           .endVertex();
     }
@@ -199,19 +207,19 @@ public final class GuiHelper {
 
     if (remainder > 0) {
 
-      buffer.pos(x, y + height - (sections * iconHeight), z)
+      buffer.pos(matrix, x, y + height - (sections * iconHeight), z)
           .tex(minU, maxV)
           .endVertex();
 
-      buffer.pos(x + width, y + height - (sections * iconHeight), z)
+      buffer.pos(matrix, x + width, y + height - (sections * iconHeight), z)
           .tex(minU + (maxU - minU) * width / (float) iconWidth, maxV)
           .endVertex();
 
-      buffer.pos(x + width, y + height - (sections * iconHeight + remainder), z)
+      buffer.pos(matrix, x + width, y + height - (sections * iconHeight + remainder), z)
           .tex(minU + (maxU - minU) * width / (float) iconWidth, maxV - (maxV - minV) * remainder / (float) iconHeight)
           .endVertex();
 
-      buffer.pos(x, y + height - (sections * iconHeight + remainder), z)
+      buffer.pos(matrix, x, y + height - (sections * iconHeight + remainder), z)
           .tex(minU, maxV - (maxV - minV) * remainder / (float) iconHeight)
           .endVertex();
     }
@@ -231,6 +239,7 @@ public final class GuiHelper {
   }
 
   public static void drawScaledTexturedModalRectFromIconAnchorBottomLeft(
+      MatrixStack matrixStack,
       int x,
       int y,
       float z,
@@ -258,6 +267,7 @@ public final class GuiHelper {
     int verticalSections = height / iconHeight + 1;
     int horizontalSections = width / iconWidth + 1;
 
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     BufferBuilder buffer = Tessellator.getInstance().getBuffer();
     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
@@ -274,10 +284,10 @@ public final class GuiHelper {
         float tv2 = maxV - (maxV - minV) * (((i + 1) * iconHeight > height)
             ? (height - (i * iconHeight)) / (float) iconHeight : 1);
 
-        buffer.pos(px1, py1, z).tex(minU, maxV).endVertex();
-        buffer.pos(px2, py1, z).tex(tu2, maxV).endVertex();
-        buffer.pos(px2, py2, z).tex(tu2, tv2).endVertex();
-        buffer.pos(px1, py2, z).tex(minU, tv2).endVertex();
+        buffer.pos(matrix, px1, py1, z).tex(minU, maxV).endVertex();
+        buffer.pos(matrix, px2, py1, z).tex(tu2, maxV).endVertex();
+        buffer.pos(matrix, px2, py2, z).tex(tu2, tv2).endVertex();
+        buffer.pos(matrix, px1, py2, z).tex(minU, tv2).endVertex();
       }
     }
 
@@ -310,6 +320,7 @@ public final class GuiHelper {
 
   // https://github.com/TheCBProject/CoFHLib/blob/master/src/main/java/cofh/lib/gui/GuiBase.java
   public static void drawScaledTexturedModalRectFromIcon(
+      MatrixStack matrixStack,
       int x,
       int y,
       float z,
@@ -330,22 +341,23 @@ public final class GuiHelper {
     float minV = icon.getMinV();
     float maxV = icon.getMaxV();
 
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     BufferBuilder buffer = Tessellator.getInstance().getBuffer();
     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
     buffer
-        .pos(x, y + height, z)
+        .pos(matrix, x, y + height, z)
         .tex(minU, minV + (maxV - minV) * height / (float) iconHeight)
         .endVertex();
     buffer
-        .pos(x + width, y + height, z)
+        .pos(matrix, x + width, y + height, z)
         .tex(minU + (maxU - minU) * width / (float) iconWidth, minV + (maxV - minV) * height / (float) iconHeight)
         .endVertex();
     buffer
-        .pos(x + width, y, z)
+        .pos(matrix, x + width, y, z)
         .tex(minU + (maxU - minU) * width / (float) iconWidth, minV)
         .endVertex();
     buffer
-        .pos(x, y, z)
+        .pos(matrix, x, y, z)
         .tex(minU, minV)
         .endVertex();
     Tessellator.getInstance().draw();
@@ -363,6 +375,7 @@ public final class GuiHelper {
    * @param rotation (clockwise) 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
    */
   public static void drawRotatedTexturedModalSquare(
+      MatrixStack matrixStack,
       int x,
       int y,
       float z,
@@ -374,6 +387,7 @@ public final class GuiHelper {
 
     // TODO: these magic numbers tho...
 
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     Tessellator tessellator = Tessellator.getInstance();
     BufferBuilder vertexbuffer = tessellator.getBuffer();
     vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -381,76 +395,76 @@ public final class GuiHelper {
     if (rotation == 1) {
 
       vertexbuffer
-          .pos(x, y + size, z)
+          .pos(matrix, x, y + size, z)
           .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, (y + size), z)
+          .pos(matrix, x + size, (y + size), z)
           .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, y, z)
+          .pos(matrix, x + size, y, z)
           .tex(textureX * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x, y, z)
+          .pos(matrix, x, y, z)
           .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
 
     } else if (rotation == 2) {
 
       vertexbuffer
-          .pos(x, y + size, z)
+          .pos(matrix, x, y + size, z)
           .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, (y + size), z)
+          .pos(matrix, x + size, (y + size), z)
           .tex(textureX * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, y, z)
+          .pos(matrix, x + size, y, z)
           .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x, y, z)
+          .pos(matrix, x, y, z)
           .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
 
     } else if (rotation == 3) {
 
       vertexbuffer
-          .pos(x, y + size, z)
+          .pos(matrix, x, y + size, z)
           .tex(textureX * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, (y + size), z)
+          .pos(matrix, x + size, (y + size), z)
           .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, y, z)
+          .pos(matrix, x + size, y, z)
           .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x, y, z)
+          .pos(matrix, x, y, z)
           .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
 
     } else { // rotation 0 is default
 
       vertexbuffer
-          .pos(x, y + size, z)
+          .pos(matrix, x, y + size, z)
           .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, (y + size), z)
+          .pos(matrix, x + size, (y + size), z)
           .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x + size, y, z)
+          .pos(matrix, x + size, y, z)
           .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
       vertexbuffer
-          .pos(x, y, z)
+          .pos(matrix, x, y, z)
           .tex(textureX * 0.00390625F, textureY * 0.00390625F)
           .endVertex();
 

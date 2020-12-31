@@ -26,6 +26,7 @@ public abstract class GuiElementTiledTextureAtlasSpriteBase
     this.textureBind(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 
     this.guiBase.drawScaledTexturedModalRectFromIconAnchorBottomLeft(
+        matrixStack,
         this.elementXModifiedGet(),
         this.elementYModifiedGet(),
         this.textureAtlasSpriteGet(),

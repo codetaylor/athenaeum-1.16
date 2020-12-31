@@ -196,12 +196,13 @@ public abstract class GuiContainerBase<T extends ContainerBase>
     return result;
   }
 
-  public void drawScaledTexturedModalRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
+  public void drawScaledTexturedModalRectFromIcon(MatrixStack matrixStack, int x, int y, TextureAtlasSprite icon, int width, int height) {
 
-    GuiHelper.drawScaledTexturedModalRectFromIcon(x, y, this.itemRenderer.zLevel, icon, width, height);
+    GuiHelper.drawScaledTexturedModalRectFromIcon(matrixStack, x, y, this.itemRenderer.zLevel, icon, width, height);
   }
 
   public void drawScaledTexturedModalRectFromIconAnchorBottomLeft(
+      MatrixStack matrixStack,
       int x,
       int y,
       TextureAtlasSprite icon,
@@ -209,7 +210,7 @@ public abstract class GuiContainerBase<T extends ContainerBase>
       int height
   ) {
 
-    GuiHelper.drawScaledTexturedModalRectFromIconAnchorBottomLeft(x, y, this.itemRenderer.zLevel, icon, width, height);
+    GuiHelper.drawScaledTexturedModalRectFromIconAnchorBottomLeft(matrixStack, x, y, this.itemRenderer.zLevel, icon, width, height);
   }
 
   /**
@@ -222,9 +223,9 @@ public abstract class GuiContainerBase<T extends ContainerBase>
    * @param size     the size
    * @param rotation (clockwise) 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
    */
-  public void drawRotatedTexturedModalSquare(int x, int y, int textureX, int textureY, int size, int rotation) {
+  public void drawRotatedTexturedModalSquare(MatrixStack matrixStack, int x, int y, int textureX, int textureY, int size, int rotation) {
 
-    GuiHelper.drawRotatedTexturedModalSquare(x, y, this.itemRenderer.zLevel, textureX, textureY, size, rotation);
+    GuiHelper.drawRotatedTexturedModalSquare(matrixStack, x, y, this.itemRenderer.zLevel, textureX, textureY, size, rotation);
   }
 
   public void drawString(MatrixStack matrixStack, String text, int x, int y) {

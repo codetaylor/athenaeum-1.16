@@ -39,13 +39,14 @@ public class GuiElementTextureRectangle
     Texture texture = this.textureGet(mouseX, mouseY);
 
     this.textureBind(texture);
-    this.elementDraw(texture);
+    this.elementDraw(matrixStack, texture);
 
   }
 
-  protected void elementDraw(Texture texture) {
+  protected void elementDraw(MatrixStack matrixStack, Texture texture) {
 
     GuiHelper.drawModalRectWithCustomSizedTexture(
+        matrixStack,
         this.elementXModifiedGet(),
         this.elementYModifiedGet(),
         0,
